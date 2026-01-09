@@ -4,22 +4,22 @@ A Flask-based Employees Management System that allows administrators to manage a
 This project is designed for internal HR/Admin usage with a clean UI, role-based access, and a clear separation between active employees and ex-employees.
 
 # Admin Features
-Secure Admin Login & Logout
+• Secure Admin Login & Logout
 
-View Active Employees Dashboard
+• View Active Employees Dashboard
 
-View Ex-Employees List
+• View Ex-Employees List
 
-View detailed Employee / Ex-Employee Profile
+• View detailed Employee / Ex-Employee Profile
 
-Upload employee photos
+• Upload employee photos
 
-Set / reset employee passwords
+• Set / reset employee passwords
 
-Mark employee as Inactive using a toggle button
+• Mark employee as Inactive using a toggle button
 
-Automatically sets work_status = inactive
+• Automatically sets work_status = inactive
 
-Automatically sets leaving_date = current date
+• Automatically sets leaving_date = current date
 
-Role-based access using @admin_required
+• Role-based access using @admin_required
