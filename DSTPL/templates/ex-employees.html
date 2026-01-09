@@ -1,0 +1,720 @@
+<!-- <!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Employee Directory</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <style>
+        /* === layout / visual styles (kept exactly like your design) === */
+        body {
+            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto;
+            background: linear-gradient(180deg, #f3f7fb 0%, #ffffff 40%);
+            margin: 28px;
+            color: #0f172a;
+        }
+
+        .container-card {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(2, 6, 23, 0.06);
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .table-wrap {
+            padding: 18px;
+        }
+
+        table.dataTable {
+            width: 100% !important;
+            border-collapse: separate !important;
+            border-spacing: 0 10px;
+        }
+
+        table.dataTable thead th {
+            background: linear-gradient(90deg, #2563eb, #06b6d4);
+            color: white;
+            font-weight: 700;
+            padding: 12px 14px;
+            text-transform: uppercase;
+            font-size: 12px;
+            border: none;
+        }
+
+        table.dataTable tbody tr {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(2, 6, 23, 0.04);
+            transition: transform .12s ease;
+            cursor: pointer;
+        }
+
+        table.dataTable tbody tr:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(2, 6, 23, 0.06);
+        }
+
+        table.dataTable tbody td {
+            padding: 12px 14px;
+            vertical-align: middle;
+            border: none;
+        }
+
+        .name-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .avatar-initial {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 14px;
+            background: linear-gradient(135deg, #34d399, #06b6d4);
+            flex-shrink: 0;
+        }
+
+        .name-strong {
+            font-weight: 600;
+        }
+
+        .email-small {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .designation-pill {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(2, 6, 23, 0.04);
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 16px;
+            color: #6b7280;
+        }
+
+        #avatarModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #avatarModalWrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: min(60vmin, 560px);
+            height: min(60vmin, 560px);
+            max-width: 95vw;
+            max-height: 95vh;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            background: #fff;
+        }
+
+        #avatarModalImg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 50%;
+        }
+
+        @media (max-width:700px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            #avatarModalWrapper {
+                width: min(80vmin, 420px);
+                height: min(80vmin, 420px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <br>
+    <div class="container-card">
+        <div class="header">
+            <h2>Employee Directory</h2>
+            <div>
+                
+                <a href="{{ url_for('welcome') }}" class="btn btn-outline-primary btn-sm">Home</a>
+                <a href="{{ url_for('admin_dashboard') }}" class="back-btn"
+                    style="right:20px; background: rgba(255,255,255,0.18);">Dashboard</a>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table id="employees" class="display stripe">
+                <thead>
+                    <tr>
+                        <th>Employee Name</th>
+                        <th>Designation</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for r in rows %}
+                    {% set parts = (r.name or "").split() %}
+                    {% set initials = ((parts[0][0] if parts else '') + (parts[1][0] if parts|length > 1 else '')) |
+                    upper %}
+                    {% if r.image %}
+                    {% if r.image.startswith('http') or r.image.startswith('https') %}
+                    {% set avatar_src = r.image %}
+                    {% else %}
+                    {% set avatar_src = url_for('static', filename='images/' ~ r.image) %}
+                    {% endif %}
+                    {% else %}
+                    {% set avatar_src = url_for('employee_photo', employee_id=r.employee_id) %}
+                    {% endif %}
+
+                    <tr class="clickable-row" data-email="{{ r.email }}" data-id="{{ r.employee_id }}" {% if
+                        session.get('is_admin') %}
+                        data-href="{{ url_for('admin_view_ex_profile', employee_id=r.employee_id) }}" {% endif %}>
+                        <td>
+                            <div class="name-cell">
+                                <img class="avatar-img" src="{{ avatar_src }}" alt="avatar-{{ r.employee_id }}">
+                                <div class="avatar-initial">{{ initials }}</div>
+                                <div>
+                                    <div class="name-strong">{{ r.name }}</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td><span class="designation-pill">{{ r.designation|default('Not Assigned') }}</span></td>
+
+                        <td>
+                            <div class="email-small">{{ r.email }}</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">&copy; DSTPL Employees Portal</div>
+    </div>
+
+    
+    <div id="avatarModal" aria-hidden="true" role="dialog">
+        <div id="avatarModalWrapper" role="document">
+            <img id="avatarModalImg" src="" alt="avatar large">
+        </div>
+    </div>
+
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        (function () {
+            // init DataTable
+            $(document).ready(function () {
+                $('#employees').DataTable({
+                    paging: false,
+                    info: false,
+                    ordering: true,
+                    dom: 'frtip',
+                    language: { search: "Search:" }
+                });
+
+                // Avatar load + fallback to initials
+                document.querySelectorAll('.avatar-img').forEach(function (imgEl) {
+                    const initialsEl = imgEl.nextElementSibling;
+                    imgEl.style.display = 'none';
+
+                    imgEl.addEventListener('load', function () {
+                        if (initialsEl && initialsEl.classList.contains('avatar-initial')) {
+                            initialsEl.style.display = 'none';
+                        }
+                        imgEl.style.display = 'inline-block';
+                    });
+
+                    imgEl.addEventListener('error', function () {
+                        imgEl.style.display = 'none';
+                        if (initialsEl && initialsEl.classList.contains('avatar-initial')) {
+                            initialsEl.style.display = 'inline-flex';
+                        }
+                    });
+
+                    if (imgEl.complete) {
+                        if (imgEl.naturalWidth !== 0) imgEl.dispatchEvent(new Event('load'));
+                        else imgEl.dispatchEvent(new Event('error'));
+                    }
+
+                    // open modal on avatar click (stop row click)
+                    imgEl.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        const modal = document.getElementById('avatarModal');
+                        const modalImg = document.getElementById('avatarModalImg');
+                        modalImg.src = imgEl.src + (imgEl.src.indexOf('?') === -1 ? '?v=' + Date.now() : '&v=' + Date.now());
+                        modal.style.display = 'flex';
+                        modal.setAttribute('aria-hidden', 'false');
+                        document.body.style.overflow = 'hidden';
+                    });
+                });
+
+                // hide modal on background click or escape
+                const avatarModal = document.getElementById('avatarModal');
+                const avatarModalWrapper = document.getElementById('avatarModalWrapper');
+                const avatarModalImg = document.getElementById('avatarModalImg');
+
+                avatarModal.addEventListener('click', function (e) {
+                    if (e.target === avatarModal) closeModal();
+                });
+                avatarModalWrapper.addEventListener('click', function (e) {
+                    if (e.target === avatarModalWrapper) closeModal();
+                });
+                avatarModalImg.addEventListener('click', function (e) { e.stopPropagation(); });
+
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && avatarModal.style.display === 'flex') closeModal();
+                });
+
+                function closeModal() {
+                    avatarModal.style.display = 'none';
+                    avatarModal.setAttribute('aria-hidden', 'true');
+                    avatarModalImg.src = '';
+                    document.body.style.overflow = '';
+                }
+
+                // Row click → admin (direct) OR login (prefill)
+                $('#employees tbody').on('click', 'tr.clickable-row', function () {
+                    const $row = $(this);
+                    const adminHref = $row.data('href'); // present only when admin
+                    if (adminHref) {
+                        window.location = adminHref;
+                        return;
+                    }
+
+                    // fallback — open login with email prefilled
+                    const email = $row.data('email');
+                    if (email) {
+                        window.location = "{{ url_for('login') }}" + "?email=" + encodeURIComponent(email);
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+
+</html> -->
+
+
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Employee Directory</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <style>
+        /* === layout / visual styles (kept exactly like your design) === */
+        body {
+            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto;
+            background: linear-gradient(180deg, #f3f7fb 0%, #ffffff 40%);
+            margin: 28px;
+            color: #0f172a;
+        }
+
+        .container-card {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(2, 6, 23, 0.06);
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .table-wrap {
+            padding: 18px;
+        }
+
+        table.dataTable {
+            width: 100% !important;
+            border-collapse: separate !important;
+            border-spacing: 0 10px;
+        }
+
+        table.dataTable thead th {
+            background: linear-gradient(90deg, #2563eb, #06b6d4);
+            color: white;
+            font-weight: 700;
+            padding: 12px 14px;
+            text-transform: uppercase;
+            font-size: 12px;
+            border: none;
+        }
+
+        table.dataTable tbody tr {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(2, 6, 23, 0.04);
+            transition: transform .12s ease;
+            cursor: pointer;
+        }
+
+        table.dataTable tbody tr:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(2, 6, 23, 0.06);
+        }
+
+        table.dataTable tbody td {
+            padding: 12px 14px;
+            vertical-align: middle;
+            border: none;
+        }
+
+        .name-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .avatar-initial {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 14px;
+            background: linear-gradient(135deg, #34d399, #06b6d4);
+            flex-shrink: 0;
+        }
+
+        .name-strong {
+            font-weight: 600;
+        }
+
+        .email-small {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .designation-pill {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(2, 6, 23, 0.04);
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 16px;
+            color: #6b7280;
+        }
+
+        #avatarModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #avatarModalWrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: min(60vmin, 560px);
+            height: min(60vmin, 560px);
+            max-width: 95vw;
+            max-height: 95vh;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            background: #fff;
+        }
+
+        #avatarModalImg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 50%;
+        }
+
+        @media (max-width:700px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            #avatarModalWrapper {
+                width: min(80vmin, 420px);
+                height: min(80vmin, 420px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <br>
+    <div class="container-card">
+        <div class="header">
+            <h2>Employee Directory</h2>
+            <div>
+                <!-- Both buttons now share the same look -->
+                <a href="{{ url_for('welcome') }}" class="btn btn-outline-primary btn-sm">Home</a>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary btn-sm ms-2">Dashboard</a>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table id="employees" class="display stripe">
+                <thead>
+                    <tr>
+                        <th>Employee Name</th>
+                        <th>Designation</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for r in rows %}
+                    {% set parts = (r.name or "").split() %}
+                    {% set initials = ((parts[0][0] if parts else '') + (parts[1][0] if parts|length > 1 else '')) |
+                    upper %}
+                    {% if r.image %}
+                    {% if r.image.startswith('http') or r.image.startswith('https') %}
+                    {% set avatar_src = r.image %}
+                    {% else %}
+                    {% set avatar_src = url_for('static', filename='images/' ~ r.image) %}
+                    {% endif %}
+                    {% else %}
+                    {% set avatar_src = url_for('employee_photo', employee_id=r.employee_id) %}
+                    {% endif %}
+
+                    <tr class="clickable-row" data-email="{{ r.email }}" data-id="{{ r.employee_id }}" {% if
+                        session.get('is_admin') %}
+                        data-href="{{ url_for('admin_view_ex_profile', employee_id=r.employee_id) }}" {% endif %}>
+                        <td>
+                            <div class="name-cell">
+                                <img class="avatar-img" src="{{ avatar_src }}" alt="avatar-{{ r.employee_id }}">
+                                <div class="avatar-initial">{{ initials }}</div>
+                                <div>
+                                    <div class="name-strong">{{ r.name }}</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td><span class="designation-pill">{{ r.designation|default('Not Assigned') }}</span></td>
+
+                        <td>
+                            <div class="email-small">{{ r.email }}</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">&copy; DSTPL Employees Portal</div>
+    </div>
+
+    <!-- Avatar Modal -->
+    <div id="avatarModal" aria-hidden="true" role="dialog">
+        <div id="avatarModalWrapper" role="document">
+            <img id="avatarModalImg" src="" alt="avatar large">
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        (function () {
+            // init DataTable
+            $(document).ready(function () {
+                $('#employees').DataTable({
+                    paging: false,
+                    info: false,
+                    ordering: true,
+                    dom: 'frtip',
+                    language: { search: "Search:" }
+                });
+
+                // Avatar load + fallback to initials
+                document.querySelectorAll('.avatar-img').forEach(function (imgEl) {
+                    const initialsEl = imgEl.nextElementSibling;
+                    imgEl.style.display = 'none';
+
+                    imgEl.addEventListener('load', function () {
+                        if (initialsEl && initialsEl.classList.contains('avatar-initial')) {
+                            initialsEl.style.display = 'none';
+                        }
+                        imgEl.style.display = 'inline-block';
+                    });
+
+                    imgEl.addEventListener('error', function () {
+                        imgEl.style.display = 'none';
+                        if (initialsEl && initialsEl.classList.contains('avatar-initial')) {
+                            initialsEl.style.display = 'inline-flex';
+                        }
+                    });
+
+                    if (imgEl.complete) {
+                        if (imgEl.naturalWidth !== 0) imgEl.dispatchEvent(new Event('load'));
+                        else imgEl.dispatchEvent(new Event('error'));
+                    }
+
+                    // open modal on avatar click (stop row click)
+                    imgEl.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        const modal = document.getElementById('avatarModal');
+                        const modalImg = document.getElementById('avatarModalImg');
+                        modalImg.src = imgEl.src + (imgEl.src.indexOf('?') === -1 ? '?v=' + Date.now() : '&v=' + Date.now());
+                        modal.style.display = 'flex';
+                        modal.setAttribute('aria-hidden', 'false');
+                        document.body.style.overflow = 'hidden';
+                    });
+                });
+
+                // hide modal on background click or escape
+                const avatarModal = document.getElementById('avatarModal');
+                const avatarModalWrapper = document.getElementById('avatarModalWrapper');
+                const avatarModalImg = document.getElementById('avatarModalImg');
+
+                avatarModal.addEventListener('click', function (e) {
+                    if (e.target === avatarModal) closeModal();
+                });
+                avatarModalWrapper.addEventListener('click', function (e) {
+                    if (e.target === avatarModalWrapper) closeModal();
+                });
+                avatarModalImg.addEventListener('click', function (e) { e.stopPropagation(); });
+
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && avatarModal.style.display === 'flex') closeModal();
+                });
+
+                function closeModal() {
+                    avatarModal.style.display = 'none';
+                    avatarModal.setAttribute('aria-hidden', 'true');
+                    avatarModalImg.src = '';
+                    document.body.style.overflow = '';
+                }
+
+                // Row click → admin (direct) OR login (prefill)
+                $('#employees tbody').on('click', 'tr.clickable-row', function () {
+                    const $row = $(this);
+                    const adminHref = $row.data('href'); // present only when admin
+                    if (adminHref) {
+                        window.location = adminHref;
+                        return;
+                    }
+
+                    // fallback — open login with email prefilled
+                    const email = $row.data('email');
+                    if (email) {
+                        window.location = "{{ url_for('login') }}" + "?email=" + encodeURIComponent(email);
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+
+</html>

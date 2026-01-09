@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{% block title %}DSTPL Employees{% endblock %}</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    {% block head_extra %}{% endblock %}
+    <style>
+        /* small baseline so pages using base.html keep same look */
+        body {
+            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto;
+            background: linear-gradient(180deg, #f3f7fb 0%, #fff 40%);
+            margin: 0;
+            color: #0f172a;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <main role="main" class="py-3">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

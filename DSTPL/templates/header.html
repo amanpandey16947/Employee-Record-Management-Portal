@@ -1,0 +1,77 @@
+<header class="digi-header">
+    <div class="digi-header-inner">
+        <a href="https://www.google.com/" target="_blank" class="digi-logo-link">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="DigiShield Technologies Logo"
+                class="digi-logo">
+        </a>
+        <h1 class="digi-title">Welcome to ABC Intranet</h1>
+    </div>
+</header>
+
+<style>
+    /* ===== DigiShield Header Styling (Bright Version) ===== */
+    .digi-header {
+        background: linear-gradient(90deg, #e0f2fe, #93c5fd, #60a5fa, #3b82f6);
+        color: #1e293b;
+        padding: 22px 40px;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+        position: relative;
+        z-index: 100;
+        border-bottom: 3px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .digi-header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+    }
+
+    /* ==== Logo Styling ==== */
+    .digi-logo-link {
+        text-decoration: none;
+    }
+
+    .digi-logo {
+        height: 85px;
+        width: auto;
+        object-fit: contain;
+        filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.25));
+        transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .digi-logo:hover {
+        transform: scale(1.08);
+        filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.4));
+    }
+
+    /* ==== Title Styling ==== */
+    .digi-title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: 1.1px;
+        text-align: center;
+        color: #0f172a;
+        text-shadow: 0 2px 4px rgba(255, 255, 255, 0.7), 0 0 8px rgba(59, 130, 246, 0.2);
+    }
+
+    /* ==== Responsive ==== */
+    @media (max-width: 768px) {
+        .digi-header {
+            padding: 15px 25px;
+        }
+
+        .digi-logo {
+            height: 65px;
+        }
+
+        .digi-title {
+            font-size: 1.4rem;
+            width: 100%;
+        }
+    }
+</style>
