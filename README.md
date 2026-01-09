@@ -61,3 +61,4 @@ This project is designed for internal HR/Admin usage with a clean UI, role-based
 
 <img width="1849" height="863" alt="Screenshot 2026-01-09 153929" src="https://github.com/user-attachments/assets/255b02a6-cf12-4b75-bc6b-39fab0f72e24" />
 
+<img width="1853" height="867" alt="Screenshot 2026-01-09 154358" src="https://github.com/user-attachments/assets/37d6afa0-c72e-40f0-adee-4fd76acda4e2" />
