@@ -52,3 +52,12 @@ This project is designed for internal HR/Admin usage with a clean UI, role-based
 • Auth: Flask Sessions
 
 • UI: Responsive design with modern UX
+
+<img width="1916" height="868" alt="Screenshot 2026-01-09 153556" src="https://github.com/user-attachments/assets/72ab8c0d-6c1c-4c68-8d30-46ac7368dbd1" />
+
+<img width="1885" height="860" alt="Screenshot 2026-01-09 153647" src="https://github.com/user-attachments/assets/d45d19e9-53bd-43ce-93d1-0f4b62c5303a" />
+
+<img width="1901" height="751" alt="Screenshot 2026-01-09 153811" src="https://github.com/user-attachments/assets/f07cfdb6-c9f8-451d-b33d-094cb0a88d5e" />
+
+<img width="1849" height="863" alt="Screenshot 2026-01-09 153929" src="https://github.com/user-attachments/assets/255b02a6-cf12-4b75-bc6b-39fab0f72e24" />
+
