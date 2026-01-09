@@ -23,3 +23,14 @@ This project is designed for internal HR/Admin usage with a clean UI, role-based
 • Automatically sets leaving_date = current date
 
 • Role-based access using @admin_required
+
+# Employee Profile
+• Personal Details
+
+• Designation & Contact details
+
+• LinkedIn Profile Link
+
+• Uploaded Documents --> Aadhar card, Degree Certificate
+
+• Profile photo with click-to-enlarge modal view
