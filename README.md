@@ -34,3 +34,21 @@ This project is designed for internal HR/Admin usage with a clean UI, role-based
 • Uploaded Documents --> Aadhar card, Degree Certificate
 
 • Profile photo with click-to-enlarge modal view
+
+# Navigation Logic
+• Toggle button appears only when profile is opened from Admin Dashboard.
+
+• Toggle is hidden when profile is opened via Ex-Employees list.
+
+• Back button appears only when applicable.
+
+# Tech Stack
+• Backend: Python (Flask)
+
+• Frontend: HTML, CSS, Bootstrap 5, Jinja2
+
+• Database: PostgreSQL
+
+• Auth: Flask Sessions
+
+• UI: Responsive design with modern UX
